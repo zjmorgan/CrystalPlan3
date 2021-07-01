@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: crystalplan
+Version: 1.2
+Summary: CrystalPlan is an experiment planning tool for crystallography. You can choose an instrument and supply your sample's lattice parameters to simulate which reflections will be measured, by which detectors and at what wavelengths.
+Home-page: https://github.com/neutrons/CrystalPlan
+Author: Janik Zikovsky
+Author-email: zikovskyjl@ornl.gov
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

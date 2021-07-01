@@ -1,0 +1,4 @@
+Traits
+Mayavi
+numpy
+scipy

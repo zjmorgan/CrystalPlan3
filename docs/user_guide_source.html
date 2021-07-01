@@ -1,0 +1,892 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>CrystalPlan 1.1 User Guide</title>
+<meta name="generator" content="Bluefish 1.0.7"/>
+<meta name="author" content="Janik Zikovsky"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8"/>
+<meta http-equiv="content-style-type" content="text/css" />
+</head>
+
+<style type="text/css">
+	.break { page-break-before: always; }
+
+img {
+	vertical-align:middle;
+	}
+IMG.frameshot 
+	{
+	display: block;
+	margin-left: auto;
+   margin-right: auto;
+   padding-top: 15px;
+   padding-bottom: 15px;
+   }
+IMG.centered 
+	{
+	display: block;
+	margin-left: auto;
+   margin-right: auto;
+   padding-top: 15px;
+   padding-bottom: 15px;
+   }
+dt {
+	display: list-item;
+	font-weight:bold;
+	padding-bottom: 3px;
+	}
+h1 {
+	font-size:28pt;
+	padding-left:10px;
+	}
+h2 {
+	font-size:24pt;
+	border-top:medium solid #000000;
+	}
+h3 {
+	font-size:20pt;
+	border-top:thin solid #000000;
+	padding-top:5px;
+	}
+h4 {
+	font-size:16pt;
+	border-top:thin dashed #000000;
+	padding-top:5px;
+	padding-left:10px;
+	}
+li {
+	padding-top:3px;
+	}
+ul {
+	padding-bottom: 5px;
+	}
+hr {
+border: 0;
+color: #9E9E9E;
+background-color: #9E9E9E;
+height: 1px;
+width: 100%;
+text-align: left;
+}
+</style>
+
+
+
+<body bgcolor="white">
+
+<img src="../gui/icons/CrystalPlan_icon.png" width="256" height="256" border="0" alt="CrystalPlan Icon" align="right" />
+
+<h1>CrystalPlan 1.1 User Guide</h1>
+by Janik Zikovsky (zikovskyjl@ornl.gov)<br/>
+<br/>
+Document started April 14, 2010; Last modified on {{date}}.
+<br/>
+
+  
+<h2>Introduction</h2>
+
+<p>CrystalPlan is an experiment planning tool for crystallography; CrystalPlan...
+</p>
+<ul>
+<li>Lets you put in a list of sample orientation angles, and...</li>
+<li>...calculates the coverage of detectors in reciprocal space.</li>
+<li>When you give it your sample's lattice parameters and UB matrix, it...</li>
+<li>...predicts the positions of single-crystal peaks.</li>
+<li>You can then optimize your experiment by trying different orientations and seeing if your coverage statistics will still be adequate.</li>
+</ul>
+
+<h2>Table of Contents</h2>
+
+{{toc}}
+
+<!-- ========================================================= -->
+<!-- ========================================================= -->
+<!-- ========================================================= -->
+
+<h2>Quick Overview of CrystalPlan</h2>
+
+<ul>
+<li>CrystalPlan shows you what you expect to measure, in reciprocal space, in the <a href="#FrameQspaceView">3D viewer.</a></li>
+<li>First, you define <a href="#PanelStartup">how much of reciprocal space you expect to measure.</a></li>
+<li>Then, you enter or load your <a href="#PanelSample">crystal lattice parameters</a> as well as the UB matrix containing your sample's mounting orientation.</li>
+<li>Then you can <a href="#PanelTryPosition">try sample orientations</a> or <a href="#PanelAddPositions">add several</a>. </li>
+<li>As you do this, the 3D view updates to show you either the coverage as a <a href="#3d_volume">volume in reciprocal space</a> you've measured, or <a href="#3d_points">color-coded single crystal reflection peaks</a> indicating how many times each peak was measured.</li>
+<li>Coverage statistics (% of volume or # of peaks measured) are calculated for you, helping you determine if you have sufficient completeness.</li>
+<li>And the <a href="#FrameOptimizer">Automatic Coverage Optimizer</a> can make an experiment plan for you automatically.</li>
+<li>Browse your experiment plan in <a href="#PanelExperiment">this tab</a>, and save it to a file to actually run the experiment.</li>
+</ul>
+
+<!-- ========================================================= -->
+<!-- ========================================================= -->
+<!-- ========================================================= -->
+
+<h2>Step-by-Step Tutorial</h2>
+
+<p>This tutorial will show you how to use most of the features of CrystalPlan by going through a typical run, step-by-step.</p>
+
+
+<!-- ========================================================= -->
+
+<h3>Starting CrystalPlan</h3>
+
+<p>From the terminal command line, type:
+<div align="center"><font face="Courier">crystalplan.py</font></div>
+The GUI launches in two new windows. Select the main window:
+</p>
+<br/>
+<img class="frameshot" src="screenshots/frame_main.png" width="400" border="0" alt="The main CrystalPlan GUI window."/><br/>
+<br/>
+Most of your workflow will occur by navigating between these notebook tabs:
+<br/><img src="animations/frame_main-tab_anim.png" border="0"/>
+
+<!-- ========================================================= -->
+
+<a name="PanelStartup" />
+<h3>Defining the Reciprocal Space of Interest and Wavelengths</h3>
+
+
+<p>Here you will set the general parameters of your experiment.</p>
+
+<ul>
+<li>Click the "Q-Space" tab, if it not already selected. If necessary, change the parameters so that it matches those shown below:
+<br/><img src="screenshots/startup-traits.png" border="0" alt=""/>
+</li>
+<ul>
+	<dt>d_min</dt>
+	<dd>The smallest d-spacing allowed. Your simulated q-space will be limited to a maximum 
+	<span class="eq">$q_{max} = {2\pi}/d_{min}$</span></dd>
+	
+	<dt>q-resolution</dt>
+	<dd>The size of a voxel (smallest volume element) simulated, in <span class="eq">$\AA^{-1}$</span>. The # of points will be calculated and shown below; you will get a warning if you try to make very high-resolution calculations, because memory consumption, etc. will be very high.</dd>
+	
+	<dt>wavelength limits</dt>
+	<dd>Specify your experiment's wavelength limits, in Ansgtroms; this could be due to limits on your neutron source or your detectors.</dd>
+</ul>
+
+<li>When done, click the 
+<img src="screenshots/startup-apply.png" border="0" alt="Apply Changes"/>
+button. Changing these settings requires re-doing a lot of calculations, which may take some time if you have a lot of orientations saved. 
+</li>
+</ul>
+
+
+<!-- ========================================================= -->
+<a name="PanelDetectors" />
+<h3>Detectors</h3>
+
+Here, you ensure that CrystalPlan has the correct detector geometry loaded.
+
+<ul>
+<li>Click the "Detectors" tab.</li>
+
+<li>Load a detector geometry by clicking the
+<img src="screenshots/detectors-buttonLoadDetectors.png" border="0" alt=""/> button. In the File Loading dialog that opens, select the "TOPAZ_detectors_all.csv" file.
+</li>
+<li>After a few seconds, the detector geometry is loaded. To confirm that the detectors are in the correct positions, you can visualize them in direct space by clicking 
+<img src="screenshots/detectors-button_view_detectors.png" border="0" alt=""/>, 
+which displays them in a window like this one:
+<br/><img class="frameshot" src="screenshots/detectors-3d_view.png" border="0" alt=""/>
+</li>
+<li>There are additional controls on this tab that are not commonly used:</li>
+<ul>
+<li>The list of detectors has checkboxes. You can uncheck a detector to indicate that it will not be used in the experiment (perhaps it is obscured or malfunctioning).</li>
+<li>The Coverage Stats button calculates the coverage of each detector. The Select Best Detectors selects the best detectors based on these coverage statistics.</li>
+</ul>
+</ul>
+
+
+<!-- ========================================================= -->
+<a name="PanelGoniometer" />
+<h3>Goniometer</h3>
+
+
+Now, you want to make sure that CrystalPlan is aware of which goniometer is currently in
+use in your instrument.
+
+<ul>
+<li>Click the "Goniometer" tab. The goniometer that is currently selected is shown at the top:
+<img src="screenshots/goniometer-selected.png" border="0" alt=""/>
+</li>
+<ul> <li>This interface allows you to modify some settings of the goniometer.</li>
+	<li>For instance, you can choose to make your goniometer control the measurement wavelength by checking the "Wavelength control" box.	</li>
+	<li>The goniometer will then have an extra "angle" controlling the center of the measurement wavelength.</li>
+	<li>You have parameters to set the bandwidth as well as a minimal wavelength that you cannot go below.</li>
+	<li>Depending on the goniometer, there may be extra settings you can change. As always, hover the mouse over an entry to get helpful pop-up hints.</li>
+	<li>To edit advanced settings of the goniometer, click the <img src="screenshots/goniometer-buttonEditAngles.png" border="0" alt="Edit Angles"/> button. Settings such as the units and range of each angle can be changed in the dialogs that pop up.</li>
+	<li>If you make any changes, don't forget to click on the <img src="screenshots/goniometer-buttonApplyChanges.png" /> button to apply them. This may clear your experiment plan, if necessary.</li>
+
+</ul>
+
+<li> Select the TOPAZ in-house goniometer:
+<br/><img src="screenshots/goniometer-choice.png" border="0" alt=""/>
+</li>
+<li>Some general information about the goniometer is shown:
+<br/><img src="screenshots/goniometer-desc.png" border="0" alt=""/>
+</li>
+<li>But your selection is not complete until you click 
+<img src="screenshots/goniometer-buttonSwitchGoniometer.png" border="0" alt=""/>
+</li>
+<li>The program will now be aware of the sample orientation angle limitations that your instrument has, and will give you warnings if you try to use an inaccessible sample orientation.</li>
+</ul>
+
+<!-- ========================================================= -->
+<a name="PanelSample" />
+<h3>Sample Settings</h3>
+
+Now, you will want to enter or load in information about your sample: crystal lattice parameters, UB matrix, etc.
+
+<ul>
+<li>Click the "Sample" tab. You are presented with an overview of the crystal parameters
+<br/><img src="screenshots/sample-info.png" border="0" alt=""/>
+</li>
+
+<h4>Edit Crystal Parameters dialog</h4>
+
+<li>Click
+<img src="screenshots/sample-buttonEditCrystal.png" border="0" alt=""/>. 
+</li>
+<ul>
+<li>This brings up the "Edit Crystal Parameters" dialog box. You may edit the name and description:
+<br/><img class="frameshot" src="screenshots/dialog_edit_crystal.png" border="0" alt=""/></li>
+<li>The top of the dialog shows you the current crystal parameters.</li>
+<br/>
+<li>The <a href="screenshots/dialog_edit_crystal-notebook1.png">"Manually Enter Lattice" tab</a>
+allows you to try out the program by typing in
+your lattice parameters and the sample mounting. 
+Clicking the 
+<img src="screenshots/dialog_edit_crystal-buttonGenerateUB.png" border="0" alt=""/> button would create a UB matrix that you can use to test features of the program; however we will not be doing that in this tutorial.
+</li>
+
+
+
+<br/>
+<li>Instead, go to the "Load from ISAW" tab:
+<br/><img src="screenshots/dialog_edit_crystal-notebook0.png" border="0" alt=""/> 
+</li>
+<li>If this were a real experiment, at this point you would have had acquired an adequate set of data at a starting sample orienation, and saved the run.</li>
+<li>You would then load that data into ISAW in order to find the sample orientation.</li>
+<li>ISAW can generate a UB matrix file that contains:</li>
+<ul> 
+<li>The crystal's <i>measured</i> UB matrix - this contains information about how the crystal is mounted relative to </li>
+<li>The crystal's lattice lengths and angles. </li>
+</ul>
+<li>To learn how to calculate a UB matrix, please refer to ISAW's documentation. Using ISAW, you will be using the Initial Peaks wizard to locate and index the peaks. This method can be used to find both the lattice parameters and UB matrix, or you can specify the lattice parameters if known.</li>
+<li>You can also generate the same file using ISAWev (the ISAW event viewer), working directly from event data in reciprocal space. The procedure is the same (find and index the peaks) though the interface is a little different. Both methods generate exactly the same file format.</li>
+<li><font size="+1">However, the UB matrix output by ISAWev <b>includes the orientation due to the goniometer</b> and not just the crystal mounting orientation.</font>
+</li>
+<ul>
+<li>The UB matrix needs to be corrected to account for this extra rotation.</li>
+<li>This requires you to enter the goniometer angles corresponding to the sample orientation in the UB matrix file to load - the goniometer settings at the time that data was acquired.
+</li>
+<li>Enter these angles, in degrees, here:
+<img src="screenshots/dialog_edit_crystal-control_load_angles.png"/>
+</li>
+<li>This is NOT necessary for ISAW, which DOES take into account the goniometer angles. Leave the angles at 0.0 for these UB matrices.</li>
+</ul>
+<li>A sample UB matrix file can be found in the "model/data/quartzub.txt" file. Click the 
+<img src="screenshots/dialog_edit_crystal-buttonReadUB.png"/>
+button and select this file in the dialog.
+</li>
+<li>The top of the dialog shows you the loaded lattice parameters and UB matrix.
+<br/><img src="screenshots/dialog_edit_crystal-control_top.png"/>
+</li>
+<li>From here, you can set the crystal's point group symmetry; however, we will leave it as "-1 (Triclinic)", as shown.</li>
+<li>Click
+<img src="screenshots/dialog_edit_crystal-buttonOK.png"/> 
+to apply the changes; clicking 
+<img src="screenshots/dialog_edit_crystal-buttonCancel.png"/>
+would revert all the changed made in the dialog. 
+</li>
+<li>Some recalculations will occur when changing the crystal lattice parameters or orientation.</li>
+</ul>
+
+<h4>Choosing H,K,L ranges</h4>
+
+<li>Still in the Sample tab, the following GUI allows you to pick which HKL to display:
+<br/><img src="screenshots/sample-range_control.png"/>
+</li>
+<li>These H,K,L ranges limit which peak indices that CrystalPlan will calculate and display.
+</li>
+<li>You can type in your ranges manually, however, I recommend that you keep both checkboxes checked:</li>
+<ul>
+<li>They use the <i>d_min</i> parameter you set earlier in the "Q-Space" tab. </li>
+<li>The first checkbox tells CrystalPlan to calculate the H,K,L ranges that fill a box of side in q-space corresponding to 
+<span class="eq">$d_{min}$</span>. </li>
+<ul>
+<li>But, the resulting peaks will form a cube only if all the lattice angles are 90 degrees.</li>
+</ul>
+<li>By checking the second box, any peaks with a d-spacing smaller that <i>d_min</i> will be rejected, leaving a sphere of reflections in q-space.</li>
+</ul>
+<li>Click the <img src="screenshots/sample-buttonApplyRange.png"/> button to apply 
+any changes you have made. All reflections are re-calculated.
+</li>
+<li>Be aware that for large cells, the number of reflections within a given 
+<span class="eq">$d_{min}$</span>
+ may be very large, slowing down calculations and requiring a lot of memory.</li>
+
+
+</ul>
+<!-- ========================================================= -->
+<a name="PanelTryPosition" />
+<h3>Trying Sample Orientations</h3>
+
+<p>At this point, we have given the program all the information it needs to start predicting what we can measure. We will now tell it what sample orientations we will try.
+</p>
+
+<ul>
+<li>Click on the "Try an Orientation" tab. 
+<br/><img src="screenshots/try.png" border="0" alt=""/>
+</li>
+<li>Check the <img src="screenshots/try-checkAdd.png"/> box.
+</li>
+<li>Now, you simulate a sample orientation.</li>
+<ul>
+<li>As you change the values, the coverage calculation is re-done and updated in the 3D viewer (which we will look at next). </li>
+<li>Use the slider or type in (and press Enter) to set a Phi angle of 30 degrees, while keeping the other two angles at 0 degrees.
+<br/><img src="screenshots/try-phi-30.png"/>
+</li>
+</ul>
+</ul>
+
+
+<!-- ========================================================= -->
+<a name="FrameQspaceView" />
+<h3>The Reciprocal Space 3D Viewer</h3>
+
+<p>Congratulations on making it this far! We will now look at the result of 
+our simulated detector coverage.</p>
+
+<ul>
+<li>Switch window to the Reciprocal Space 3D Viewer (this window opens with CrystalPlan, so it should already be open - otherwise, you can open it from the "View" menu).
+<img class="frameshot" src="screenshots/frame_qspace.png"  />
+</li>
+
+<li>The main part of the window is a 3D view of reciprocal space.</li>
+<ul>
+<li>The white cube outline represents the extent of q-space that is simulated.</li>
+<li>The center of the cube is q = [0,0,0], which corresponds of course to h,k,l = [0,0,0]</li>
+<li>The cube is sized so as to <i>just</i> hold a sphere of radius 
+<span class="eq">$q = \frac{2\pi}{d_{min}}$</span>
+</li>
+</ul>
+ <li>Right now, we are in "volume coverage" mode, which means that the shapes shown in cyan correspond to the <i>volume</i> in reciprocal space that has been measured by a detector.  
+</li>
+<ul>
+<li>When a "voxel" (volume pixel) has been measured once, it is marked as a value of "1".</li>
+<li>The surface you see is the isosurface (the edge between 0 measurements and 1 measurement).</li>
+<li>The "sharpness" of this 3D view is determined by the q-resolution you specified in the "Q-Space" tab at the beginning. You can change this resolution at any time, and the coverage will be recalculated at this new resolution.</li>
+</ul>
+
+
+<li>You can interact with the 3D view in a number of ways:</li>
+<ul>
+<li>Click the left mouse button and drag to rotate the view around the center.</li>
+<li>Hold SHIFT (or use the middle mouse button) to pan the scene around.</li>
+<li>Hold CTRL to rotate the scene only around the camera's axis (roll).</li>
+<li>Hold SHIFT+CTRL (or use the right mouse button) to zoom in and out by moving the mouse.</li>
+<li>Use the mouse wheel to zoom in and out.</li>
+<li>Press = and - to zoom in and out.</li>
+<li>Press R to reset the zoom level and center the camera.</li>
+<li>Press 3 to enable two-colour 3D rendering (with cyan/blue glasses you could see it in "real" 3D <i>a la</i> a 1950's B-movie :-) )</li>
+</ul>
+<li>The buttons at the top of the view, from left to right, are:</li>
+<ul>
+<li>6 buttons to reset the views quickly, facing the given directions.</li>
+<li>Default isometric view.</li>
+<li>Turn on orthographic projection (no perspective effects - this is very handy when looking a ordered peaks).</li>
+<li>Display the 3D axes.</li>
+<li>Go fullscreen (press Esc to go back)</li>
+<li>Save a screenshot.</li>
+</ul>
+
+<li>We will return to this window to explain the elements in more detail.</li>
+<li>For now, you can change the Phi angle in the "Try An Orientation" tab and visualize how that 
+affects the reciprocal space coverage in this window. This animation shows the effect of changing the phi of the sample from -180 to +180 degrees:
+<br/><img class="centered" src="animations/3d-phi_rotation_anim.png" border="0"/>
+</li>
+<li>And this animation shows a chi (tilt) rotation from -180 to +180 degrees, with phi kept constant:
+<br/><img class="centered" src="animations/3d-chi_rotation_anim.png" border="0"/>
+</li>
+
+</ul>
+
+
+<!-- ========================================================= -->
+
+<h3>Goniometer Limits</h3>
+
+<ul>
+<li>Back in the Main Window's "Try Position" tab, try to set a Chi angle of +45 degrees:
+<br/><img src="screenshots/try-chi-45.png"/>
+</li>
+
+<li>... and you will see the following warning message: 
+<br/><img src="screenshots/try-staticTextWarning.png" />
+<br/>informing you that you have tried a sample orientation that is not achievable by 
+the selected goniometer.
+</li>
+<ul>
+<li>Not all goniometers have such limitations; for instance, if you select the "Simple Goniometer", there are no limits to the angles you can reach.</li>
+<li>However, the currently selected "TOPAZ In-House Goniometer" is limited in Chi tilt because of its design (a 3-legged "tripod" design). It can only tilt by a few degrees above or below zero.</li>
+<li>CrystalPlan calculated which angles are possible and warns you if they are not. A string describing the <i>reason</i> why this angle is not possible is displayed, if available. </li>
+</ul>
+<li>You can still simulate this sample orientation, but be aware that you will not be able to achieve it experimentally.</li>
+</ul>
+
+
+
+<!-- ========================================================= -->
+<a name="PanelAddPositions" />
+<h3>Adding Several Sample Orientations </h3>
+
+
+<p>Now, we will start building up an experiment plan by adding sample orientations.</p>
+
+<ul>
+<li>First, uncheck the <img src="screenshots/try-checkAdd.png"/> box; this will remove the "trial" position from the coverage calculation.
+</li>
+<li>Switch to the "Add Orientations" tab.</li>
+</ul>
+
+<h4>Entering Lists of Angles</h4>
+
+<ul><li>Near the top of the window, you will see 3 text boxes where you can enter lists of angles to simulate:
+<br/><img src="screenshots/add-lists.png" />
+</li>
+<li>You can enter lists in 3 ways, based on Python script:</li>
+<ul>
+<li>A simple list separated by commas: "<strong>10, 22.5, -180</strong>". You do not need to include square brackets.</li>
+<li>An evenly divided linear range: "<strong>linspace(start, stop, steps)</strong>" will give you <i>steps</i> points, evenly divided from <i>start</i> to <i>stop</i> (inclusive).</li>
+<li>A range of values in fixed steps: "<strong>arange(start, stop, step_size)</strong>" will step starting at <i>start</i>, go up in steps of <i>step_size</i>, until you reach <i>stop</i> - but does <u>not</u> include <i>stop</i>.</li>
+</ul>
+<li>Angles are stepped through for each list: for example, if you put lists containing 5 phi angles, 4 chi angles, and 2 omega angles, your resulting list of sample orientations will have 40 phi, chi, omega combinations.</li>
+<li>You don't <em>have</em> to put in lists - you can also put in a single value for each angle, giving a single sample orientation.</li></ul>
+
+
+<h4>Checking Validity of Orientations</h4>
+
+<ul><li>Enter the following values in the angle lists: 
+<br/><img src="screenshots/add-lists2.png" />
+</li>
+<ul>
+<li>You should see the following text below the angles:
+<br/><img src="screenshots/add-textWarnings.png" />
+</li>
+<ul><li>This box tells you that some of the angles you supplied were not achievable with the goniometer, and why. These angles will not be calculated.</li>
+<li>The remaining sample orientations will be calculated.</li>
+</ul>
+</ul></ul>
+
+
+<h4>Adding Sample Orientations To Plan</h4>
+<ul>
+<li>Enter the following values in the angle lists: 
+<br/><img src="screenshots/add-lists3.png" />
+<br/>All of these sample orientations are possible.
+</li>
+<ul>
+<li>
+When you have entered your lists of angles, click the "Start" button to begin the calculation. 
+<br/><img src="screenshots/add-start_button.png" />
+</li>
+
+<li>The program now calculates the coverage at each sample orientation, and saves it in the
+experiment plan (which we will see in the next section).</li>
+
+<li>The calculation progress will be shown in this progress bar: <br/>
+<img src="screenshots/add-progress_bar.png" border="0" alt=""/> <br/></li>
+
+<li>If the calculation runs too long, you can cancel it before it completes. Sample orientations that have already been calculated will remain in the experiment plan.<br/>
+<img src="screenshots/add-cancel_button.png" border="0" alt=""/></li>
+</ul>
+
+<br/>
+<li>Another way to add sample orientations is to click the
+ <br/><img src="screenshots/try-buttonSave.png" /> button,
+ <br/>  in the "Try an Orientation" tab. This adds to the experiment plan whatever sample orientation angles you tried by setting those sliders. 
+</li>
+</ul>
+
+<!-- ========================================================= -->
+<a name="PanelExperiment" />
+<h3>The Experiment Plan</h3>
+
+<li>Switch to the "Experiment Plan" tab. Here, you see a grid with a list of all the sample orientations that have been calculated up to now:
+<br/><img src="screenshots/exp-grid.png" /> 
+</li>
+<ul>
+<li>Each row lists the sample orientation angles you will use (typically 3 angles, phi, chi, omega).</li>
+<li>The first column has a checkbox (X) if you are going to use this sample orientation in the experiment. Double-click to uncheck or recheck the box.</li>
+<ul>
+<li>When you do so, the coverage corresponding to this sample orientation is removed from the total.</li>
+</ul>
+<li>The <strong>Stopping Criterion</strong> and  <strong>Criterion Value</strong> columns allows you to specify <i>how long</i> to do the measurement for that particular sample orientation. You get a drop-down list of a few options (the exact list and function is determined by the DAS group):</li>
+<ul>
+<dt>runtime</dt>
+<dd>The time to acquire data, in seconds.</dd>
+<dt>proton charge (or pcharge)</dt>
+<dd>The accelerator proton charge total, in picoCoulombs. This criterion has the advantage of giving consistent counts, even if the accelerator goes down for some time during your run.</dd>
+<dt>counts</dt>
+<dd>The total neutron count (over all detectors).</dd>
+<dt>monitor counts</dt>
+<dd>The neutron count at the monitor.</dd>
+<dt>roi counts</dt>
+<dd>The neutron count only in the region-of-interest (roi) on a detector. The roi will be defined on the DAS computers.</dd>
+</ul>
+<li>As you change the runtime criteria, the following text box gives you an estimate of the total experiment time:
+<br/><img src="screenshots/exp-estimated_time.png" />
+<br/>Some of the criteria, such as the counts, do not allow a time to be estimated, since the counts/second cannot be known ahead of time.
+</li>
+<br/>
+
+<li>You can manipulate the entries in the following ways:
+</li>
+<ul>
+<li>You can highlight one or more rows (try Ctrl-clicking on the row numbers, or select a block with the mouse).</li>
+<li>These buttons allow you to select orientations to use in the experiment:
+<br/><img src="screenshots/exp-select_buttons.png" /> 
+</li>
+<li>These buttons allow you to delete orientations from the experiment:
+<br/><img src="screenshots/exp-delete_buttons.png" /> 
+</li>
+</ul>
+<li>When you are happy with your experiment plan, click the
+<img src="screenshots/exp-buttonSaveToCSV.png" />
+button to make a CSV (comma-separated values) file containing the list of sample orientation and runtime criteria. This file can then be loaded on the DAS computers (using PyDas, for example) to run the experiment. Note: CrystalPlan cannot re-load these CSV file; if you need to do this, you should ALSO save as a .exp file (see below). 
+</li>
+<li>You can also save your experiment to CrystalPlan experiment format (normal file extension: .exp), from the <b>File->Save Experiment to file Menu</b>. Later, you can re-load this using the <b>File->Load Experiment from file Menu</b>, and 
+continue your work. </li>
+<li>A very useful feature is the automatic coverage optimizer, covered in <a href="#FrameOptimizer">this section</a>. Click the
+<img src="screenshots/exp-buttonOptimizer.png" />
+button to open the window, or press Ctrl+O. 
+</li>
+</ul>
+
+
+
+
+<!-- ========================================================= -->
+<a name="3d_volume" />
+<h3>More Reciprocal Space 3D Viewer Options</h3>
+
+<p>Now that we have more sample orientations in our plan, we return to the 3D viewer and explore some of its options. Here is what the 3D view looks like with the 4 orientations we have calculated:</p>
+
+<br/><img class="frameshot" src="screenshots/3d-4orientations.png" border="0" alt=""/>
+
+	
+
+<h4>Coverage Statistics</h4> <!-- =================================== -->
+<table>
+<tr>
+	<td>
+	<ul>
+<li>On the bottom right, you can see the coverage statistics panel:
+<br/>
+</li>
+<ul>
+	<li>The first bar indicates what percentage of reciprocal space volume was measured (at least once).</li>
+	<li>The second bar shows the redundant measurements - the proportion of q-space that was measured at least twice.</li>
+	</ul>
+	</ul>
+	</td>
+	
+		<td><div align="right"><img src="screenshots/3d-panelStats.png"/></div></td>
+	</tr>
+</table>
+
+
+
+
+
+<h4>Slice Plot</h4> <!-- =================================== -->
+<ul>
+
+<li>On the bottom left is the slice statistics plot:
+<br/><img src="screenshots/3d-sliceControl.png"/>
+</li>
+<ul>
+<li>This plot calculates the % coverage of a thin shell centered on a q starting at 0 and ending at 
+<span class="eq">$q_{max} = {2\pi}/d_{min}$</span>.
+</li>
+<li>The light blue plot is the percentage measured at least ones; in green is the percentage measured twice, yellow for measured 3 times, and orange for 4 times or more.</li>
+<li>This plot can use d-spacing for its horizontal axis. This is set in the Preferences, under the Main Window's "File" menu. Minimize and restore the window after changing the setting in order to
+refresh the display. </li>
+</ul>
+</ul>
+
+<h4>Hemisphere View</h4> <!-- =================================== -->
+<ul>
+<li>Since all crystals have at least inversion symmetry (-1 point group) in scattering, that means that measuring a hemisphere of reciprocal space is enough to fully characterize your sample.</li>
+<ul>
+<li>Check the
+<img src="screenshots/volume_options-checkHemisphere.png"/>
+box to find and display only the "optimal" hemisphere. The program will find the side of reciprocal space with the most coverage, and ignore the rest, not displaying it at all: 
+<br/>
+<div align="center"><img src="screenshots/3d-hemisphere.png"/> <img src="screenshots/3d-panelStats-hemisphere.png"/></div>
+<li>The coverage stats also reflect this choice - the coverage is compared to the volume of the optimal hemisphere, not the whole sphere; therefore your % covered will typically be higher, as seen above.
+</li>
+</li>
+</ul></ul>
+
+<h4>Inverted View</h4> <!-- =================================== -->
+<ul><li>You can also check the 
+<img src="screenshots/volume_options-checkInvert.png"/>
+box to <i>invert</i> the coverage map, and show the volumes <i>not</i> measured.
+The next image shows the inverted coverage with the hemisphere box still checked - showing the volumes not covered but only in the hemisphere of interest.
+<div align="center"><img src="screenshots/3d-inverted.png"/></div>
+</li>
+<li>This can make it a lot easier to see spots you have missed, especially if they are hidden by covered volume.</li>
+</ul>
+
+<h4>Redundancy View</h4> <!-- =================================== -->
+<ul><li>If you check the <img src="screenshots/volume_options-checkShowRedundancy.png"/> box,
+you will get a view of the redundancy of the measurement - how many times each voxel was measured. Semi-transparent isosurfaces are color-coded to show a single measurement, then 2, then 3, and finally 4 or more measurement.
+<div align="center"><img src="screenshots/3d-redundancy.png"/></div>
+</li>
+</ul>
+
+<h4>Slice View</h4> <!-- =================================== -->
+<ul>
+<li>Check the 
+<img src="screenshots/volume_options-checkShowSlice.png"/> box
+to view only a slice, (or shell) at a given q radius and given thickness. 
+</li>
+<li>The Slice Plot now shows a hatched bar that you can move with the mouse to change the shell position and thickness.
+<br/><div align="center"><img src="screenshots/3d-sliceControl-on.png"/></div>
+</li>
+<ul>
+<li>Click and drag the center of the area to change the q-radius</li>
+<li>Click and drag the edges of the area to change the thickness.</li>
+<li>When the slice control has focus (just click on it), you can use the keyboard too:</li>
+<ul>
+<li>Left and right arrow keys move the slice a little.</li>
+<li>PageUp and PageDown move the slice more.</li>
+</ul>
+</ul>
+<li>The 3D view is updated to show only the selected slice of q-space:
+<br/><div align="center"><img src="screenshots/3d-slice.png"/></div>
+</li>
+<li>... and this also works with redundancy:
+<br/><div align="center"><img src="screenshots/3d-slice-redundancy.png"/></div>
+</li>
+
+</ul>
+
+<!-- ========================================================= -->
+<a name="3d_points" />
+<h3>3D Reflections View</h3>
+
+
+<p>Another way to measure your experimental coverage is by looking at single reflections, instead of viewing volume coverage in reciprocal space, as we have been doing before.</p>
+
+<ul><li>To switch to reflection view, clikc on the "Reflections View" tab. Instead of volumes, you now see a number of color-coded points:</li>
+<br/><img class="frameshot" src="screenshots/3d-reflections.png" />
+<li>The color-coding matches those in the volume view and the slice plot, with the addition of the dark blue peaks: those are peaks that will not be measured.</li>
+</ul>
+
+<h4>How to Display Reflections</h4> <!-- =================================== -->
+
+<ul>
+<li>You can change the way the peaks are drawn, in order to make the rendering clearer.
+<br/><img src="screenshots/3drefs-display.png"/> 
+</li>
+<ul>
+<li>Peaks can be displayed as small spheres (which look bigger when you zoom in) or pixels (which remain the same size).</li>
+<li>You can adjust the size of the spheres/pixels, or use the "Automatic" checkbox to let the program pick.</li>
+</ul>
+</ul>
+
+<h4>Which Reflections to Display</h4> <!-- =================================== -->
+
+<ul>
+<li>In the drop-down box <img src="screenshots/3drefs-view_option.png"/>, you can <i>mask out</i> reflections, leaving only the ones you want to see. 
+</li>
+<li>Here is what is shown if you select to show only the peaks that are predicted to be measured
+<br/><div align="center"><img src="screenshots/3drefs-measured.png"/>
+<img src="screenshots/3drefs-panelStats-normal.png"/>
+</div>
+</li> 
+<li>The statistics panel tells you how many reflections are in the experiment, and what percentage were measured once, and twice or more.</li>
+</ul>
+
+<h4>Using Crystal Symmetry</h4> <!-- =================================== -->
+
+<ul>
+<li>By checking the <img src="screenshots/3drefs-checkUseSymmetry.png"/> box, you will take the crystal symmetry into account when considering peaks.
+</li>
+<li>HKL peaks that are equivalent, due to symmetry, are considered to be the same.</li>
+<li>Here is what is shown if you use symmetry:
+<br/><div align="center"><img src="screenshots/3drefs-measured-symmetry.png"/>
+<img src="screenshots/3drefs-panelStats-symmetry.png"/>
+</div>
+</li> 
+<li>Note how only half of the reflections are visible. This is because the crystal is set to inversion (-1) point group symmetry, meaning that every [h, k, l] has one equivalent reflection at [-h, -k, -l]. </li>
+<li>The program only displays the "primary" [h,k,l], and the number of measurements of [h,k,l] and [-h, -k, -l] are added together to do the color-coding.</li>
+<li>Note how the statistics tab now shows a much higher percentage of reflections having been measured at least once, thanks to the symmetry of the crystal. The number of <i>unique</i> reflections is also shown.</li>
+<li>Higher symmetries will show even fewer points.</li>
+</ul>
+
+<h4>Parallel Projection</h4> <!-- =================================== -->
+<ul>
+<li>Parallel projection (as opposed to perspective projection) can be a useful way to visualize reflections in reciprocal space.</li>
+<li>Click the <img src="parallel_projection.png"/> icon in order to toggle parallel projection on/off. With parallel projection, our crystal looks like this:
+<br/><div align="center"><img src="screenshots/3drefs-parallel.png"/>
+</div>
+</li>
+</ul>
+
+
+<h4>Selecting Reflections</h4> <!-- =================================== -->
+
+<ul>
+<li>Right-click on a point in the reflection view to select it. It becomes highlighted with a small cube, and a separate window ("Single Reflection Info") pops up, as shown below: </li>
+<br/><div align="center"><img src="screenshots/3drefs-reflection_selected.png"/>
+<img src="screenshots/ref_info.png"/>
+</div>
+<li>When the Single Reflection Info window is up, another way to select a reflection is to type in the H K L indices of the peak of interest. If the peak is out of range (was not calculated), the boxes turn red:
+<img src="screenshots/ref_info-bad_hkl.png"/>
+</li>
+<li>Type in an H,K,L of 3, 2, and -4, and the selected reflection changes:</li>
+<br/><div align="center"><img src="screenshots/ref_info2.png"/></div>
+<ul>
+<li>Check the <img src="screenshots/ref_info-checkUseEquivalent.png"/> box and the equivalent hkl's will be displayed in the same list. In this case, -3, -2, 4 is the equivalent HKL:
+<br/><div align="center"><img src="screenshots/ref_info2-equivalent.png"/></div>
+</li>
+<li>The Q-vector and corresponding d-spacing of this hkl are shown.</li>
+
+
+<li>Each entry corresponds to a different sample orientation where the reflection was measured.
+<br/><div align="center"><img src="screenshots/prm.png"/></div>
+</li>
+<li>Several pieces of information are shown:</li>
+<ul>
+<li>The top line shows the sample orientation angles of that particular measurement, and the HKL at which the reflection was measured (relevant when the <img src="screenshots/ref_info-checkUseEquivalent.png"/> box is checked. </li>
+<dt>wl</dt> <dd>The wavelength at which the peak is measured.</dd>
+<dt>Det.#</dt> <dd>The name of the detector on which this peak is measured.</dd>
+<dt>X and Y</dt> <dd>Positions on the detector face, with 0 as the center of the detector.</dd>
+<dt>1/2-width</dt> <dd>The half-width of the spot, assuming the scattered beam has a divergence entered here:
+<img src="screenshots/ref_info-textCtrlDivergence.png"/> . The black spot on the graphic also represents this divergence.
+</dd>
+</ul>
+
+</ul>
+
+</ul>
+
+
+<!-- ========================================================================================================= -->
+<a name="MeasuredReflections" />
+<h4>Comparing to Real Measurements</h4> 
+
+<p>CrystalPlan allows you to compare your <i>predicted</i> measurements with the <i>actual</i> peaks found,
+after you have acquired and saved your data. 
+Remember to save your full experiment to a .exp file, using the <b>File->Save Experiment to file Menu</b>, 
+to make it easier to reload the predicted measurements after completing your experiment. 
+</p>
+
+<ul>
+<li>First, analyze your data using ISAW or ISAWev. You can generate a .peaks file (with the positions of the peaks only) or a .integrate file (with the integrated counts under the peaks also); CrystalPlan can load both.</li>
+<li>Use the <b>File->Load an ISAW .integrate or .peaks file</b> and browse to the file you created. You will be asked if you want to REPLACE or APPEND to the current measurements. Use APPEND if you need to consider several files, or REPLACE if one holds all your peaks.</li>
+<li>In the 3D viewer, under the Reflections View tab, you may have noticed this line:
+<img src="screenshots/refl-measurements.png"/><br /> 
+</li>
+<ul>
+<li>The "Color by" radio option allows you to change the color scale, using either the <i>predicted</i> number of measurements, or actually <i>measured</i> number.</li>
+<li>Crystal symmetry will be used in the same way for both color scales.</li>
+<li>The I/sigI threshold box allows you to specify what is the value of I/sigI (the intensity divided by its error) that is considered "measured". A value of 2.0 or 3.0 is typical; if you loaded a .peaks file (which has no intensity data), use 0.0 here otherwise no peaks will be visible.</li>
+<li>The drop-down box <img src="screenshots/3drefs-view_option.png"/> also has options to mask out peaks that were not measured. You can mix the color scale and masking; for example, it is particularly useful to plot all predicted peaks but use the color scale of measured peaks. That way, you can easily see which peaks were predicted but not measured.</li>
+</ul>
+<li>You can also view details of the actual measurements in the <b>Single Reflection Info</b> frame we saw previously. Each measurement at each HKL can be compared to its prediction. 
+</li>
+</ul>
+
+
+<!-- ========================================================================================================= -->
+<a name="FrameReflectionPlacer" />
+<h4>The Reflection Placer</h4> 
+
+
+<ul>
+<li>Click the <img src="screenshots/prm-buttonPlace.png"/> to bring up the reflection placer window: 
+</li>
+<br/><div align="center"><img src="screenshots/ref_placer.png"/></div>
+<li>The HKL of the reflection you had selected, and the detector on which it was are pre-selected; but you can type in your own selections if you wish to place a particular HKL on a particular detector.</li>
+<li>The map in the center of the window represents the detector face.</li>
+<li>Click on the detector with the mouse, or type in values for the X/Y coordinates you want on the detector.</li>
+<li>The program calculates the sample orientation angles phi, chi and omega that will place the peak at that point. </li>
+<li>Note that the currently selected goniometer has limitations in chi tilt that make some areas not reachable - these are shown in red in the map. Green areas can be achieved; yellow areas are spots where the orientation is possible but the peak will be detected in a wavelength range that is outside the current range set in the Q-Space tab in the main window.</li>
+<li>With an unrestrained goniometer, there is a range of sample orientation angles that will place a peak at a particular point (think of it as performing a rotation of the peaks while keeping your peak of interest centered). However, for this goniometer, the program attempts to find a chi angle as close to zero as possible (since the goniometer is limited to a few degrees near zero). </li>
+<li>Click the <img src="screenshots/ref_placer-buttonAddOrientation.png" alt="Add This Orientation"/> button and the calculated sample orientation will be added to the current experiment plan.</li>
+</ul>
+
+
+<!-- ========================================================= -->
+<a name="FrameOptimizer" />
+<h3>Automatic Coverage Optimizer</h3>
+
+
+<p>The automatic coverage optimizer can automatically create an experiment plan (list of sample orientations) for you that satisfies your coverage requirements.</p>
+
+<img class="frameshot" src="screenshots/frame_optimizer.png" border="0" alt="The Automatic Coverage Optimizer window."/><br/>
+
+<ul>
+<li>You can start the optimizer from the "Optimization" menu in the main window, or using the 
+<img src="screenshots/exp-buttonOptimizer.png" /> button from the Experiment Plan tab.</li>
+</ul>
+
+<h4>How Optimization Works; Setting Parameters</h4>
+<ul>
+<li>This window uses the <i>Genetic Algorithm</i> method to optimize a list of sample orientations. </li>
+<li>The genetic algorithm method starts by creating a <i>Population</i> of a certain number of randomized individuals.</li>
+<li>Each individual has a <i>Chromosome</i>, which consists of a list of <i>Genes</i>; in this case, a gene is a single sample orientation (goniometer angles). </li>
+<li>The <i>Fitness</i> of each individual is calculated; in this case, the % of reflections measured is the fitness score; a higher score means an individual is 'better' or 'fitter'.</li>
+<li>At each generation, the best individuals are picked (through a random process that favors the fittest individuals) to go on to the next generation. With <i>Elitism</i> enabled, the best individual(s) of the previous generation is guaranteed to stay in the next generation. This is almost always very advantageous for convergence speed. </li>
+<li>Pairs of individuals are mated together to produce offspring. Normally, a <i>Crossover</i> method mixes the chromosomes of the two parents to form new individuals. In our case, mixing lists of sample orientations tends to randomize the result, so we keep the crossover rate low, and most children are clones of their parents.</li>
+<li>Randomly selected genes are <i>Mutated</i>; they can be either completely randomized (a new angle is chosen) or "nudged" by a random amount within a few % of the full range of values. Try either way at different times. </li>
+
+<li>On the left side of the window, you will find all the settings for optimizing the calculation.</li>
+<ul>
+<li>You can hover the mouse over the parameter to get a popup help hint, so we will not be repeating that information in this user guide.</li>
+</ul>
+<li>You have an option to use the Q-space volume covered, rather than the single reflections. 
+If your crystal unit cell is large and/or you are looking at a large volume of reciprocal space
+ (i.e. you have a very large number of HKL reflections to consider), 
+ this method <i>can</i> compute faster than doing it using the single reflections. Limit your q-space resolution in the Q-Space tab of the Main Window to increase speed (at the expense of precision).</li>
+</ul>
+
+<h4>Performing Optimization</h4>
+<ul>
+<li>When the parameters have been set, click the <img src="screenshots/optim-buttonStart.png" /> button to begin the optimization. 
+</li>
+<li>Note how some parameters become greyed out while the optimization is occuring; these parameters cannot be changed while performing the calculation. All other parameters can be modified; the change will be applied at the next generation only.</li>
+<li>Coverage statistics in the form of gauges show you how your population is progressing.</li>
+<li>The plot shows you the history of coverage as generations evolved. The blue line is the average, and the green error bars indicate the lowest and highest fitness individuals. </li>
+<li>At any time, click the <img src="screenshots/optim-buttonStop.png" /> button to abort the optimization.</li>
+<ul>
+<li>The optimization will also stop automatically when it reaches the Desired Coverage value entered.</li>
+<li>If you check the "Auto Increment # of orientations", and the optimization failed to reached the desired coverage before "Max Generations" was reached, the # of orientations in the list is increased by one, and the optimization is restarted. That way, you are sure to keep going towards 100% coverage.</li>
+</ul> 
+<li>If you stopped the optimization prematurely, you can click the <img src="screenshots/optim-buttonKeepGoing.png" /> button to restart the optimization; unlike the <img src="screenshots/optim-buttonStart.png" /> button, however, this way generates the starting population from a randomized sampling of the last population; therefore, you will be picking up approximately where you left off.</li>
+</ul>
+
+<h4>Observing Results</h4>
+<ul>
+<li>During or after the optimization, click the <img src="screenshots/optim-buttonApply.png" /> button to immediately apply the results. This fills the experiment plan with the best list of sample orientations calculated. <b>Watch out! This clears out any entries already in the experiment plan, without a warning!</b></li>
+<li>You can then inspect the results in the main window and the reciprocal space viewer, even as the optimization continues in the background. <b>Warning: This works best when in multiprocessing mode (even with a single processor allocated)! Otherwise, the optimization routine is modifying the current experiment plan constantly, and you will get inconsistent results.</b></li>
+<li>The experiment plan can then be saved to .CSV in the usual way.</li>
+</ul>
+
+<h4>Tips for Faster Convergence</h4>
+<ul>
+<li>Very high mutation rates can make it difficult to find a good solution, giving unstable results.</li>
+<li>However, cross-over is effectively a mutation for this type of calculation, so do not rely on it alone to find a solution. Some mutation rate is necessary.</li>
+<li>Later in the evolution, a higher mutation rate with a smaller amount of mutation (the 'Nudge Amount %' parameter) can be helpful.</li>
+<li>Try to change your mutation settings during optimization; increase then lower the rate, amount, or switch back and forth from nudge mutation to full mutation. Sometimes the population needs a "jolt" of extra mutation to get past a plateau.</li>
+<li>Use multiprocessing, and pick a number of processors that does not exceed your system capabilities. Some of the analysis computers at SNS have many processors (e.g. 32 processors on TOPAZ). </li>
+<li>Your population should be an even multiple of the number of processors allocated. Allocating more processors than population will not be helpful.</li>
+</ul>
+
+</body>
+</html>
